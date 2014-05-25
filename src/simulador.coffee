@@ -27,8 +27,10 @@ class SimuladorImpuestos
     retiroAnual / (1 - @tasaPrimeraCategoria)
 
   tramoImpuesto: (ingresoAnual) ->
-    _.find @tramosImpuestos, (tramo) -> ingresoAnual > tramo.desde ||
-      _.first @tramosImpuestos
+    _.find(@tramosImpuestos, (tramo) -> ingresoAnual > tramo.desde) ||
+      _.last(@tramosImpuestos) # Si los ingresos son 0 usar el ultimo
+                               # tramo (pues estan ordenados de mayor a
+                               # menor)
 
   impuestoPorTramo: (ingresoAnual) ->
     tramo = @tramoImpuesto(ingresoAnual)
