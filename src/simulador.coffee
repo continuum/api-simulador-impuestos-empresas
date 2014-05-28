@@ -36,7 +36,7 @@ class SimuladorImpuestos
     tramo = @tramoImpuesto(ingresoAnual)
     ingresoAnual * tramo.factor - tramo.rebaja
 
-  impuestoExtraPorRetiros: (retiroAnualSocio, sueldoLiquidoSocio) ->
+  impuestoExtraPorGC: (retiroAnualSocio, sueldoLiquidoSocio) ->
     retiroBrutoSocio = @retiroBruto(retiroAnualSocio)
     sueldoTributableSocio = @sueldoTributable(sueldoLiquidoSocio)
     # Impuesto global total menos lo pagado por la persona por su sueldo
@@ -55,7 +55,7 @@ class SimuladorImpuestos
                            regimenEspecial) ->
     impacto =
       porTasaPrimeraCategoria: utilidadesAnuales * @tasaPrimeraCategoria,
-      porRetiros:  cantidadSocios * @impuestoExtraPorRetiros(
+      porGlobalComplementario:  cantidadSocios * @impuestoExtraPorGC(
         retiroAnualSocio, sueldoLiquidoSocio
       )
     impactoRegimenesEspeciales =
