@@ -2,18 +2,21 @@
   "name": "api-simulador-impuestos-empresas",
   "description": "API para calcular impuestos pagados por una empresa en Chile antes y despues de la reforma tributaria 2014",
   "version": "0.0.1",
+  "engines": {
+    "node": "0.10.26"
+  },
   "private": true,
   "dependencies": {
     "express": "4.3.1",
     "coffee-script": "1.7.1",
-    "underscore": "^1.6.0",
-    "cors": "^2.3.1"
+    "underscore": "1.6.0",
+    "cors": "2.3.1"
   },
   "devDependencies": {
-    "grunt-contrib-coffee": "^0.10.1",
-    "grunt-cli": "^0.1.13",
+    "grunt-contrib-coffee": "0.10.1",
+    "grunt-cli": "0.1.13",
     "grunt-coffeelint": "0.0.10",
-    "grunt": "^0.4.5",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt": "0.4.5",
+    "grunt-contrib-watch": "0.6.1"
   }
 }
