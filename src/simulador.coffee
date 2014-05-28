@@ -67,6 +67,8 @@ class SimuladorImpuestos
       else
         {}
     _.extend impacto, impactoRegimenesEspeciales
+    impacto.total = _.reduce(_.values(impacto), ((a, b) -> a + b), 0)
+    impacto
 
 class SimuladorImpuestosConRentaAtribuida extends SimuladorImpuestos
   impactoImpuestosEnCaja: (utilidadesAnuales, retiroAnualSocio,
