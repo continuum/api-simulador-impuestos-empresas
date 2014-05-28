@@ -21,7 +21,7 @@ class SimuladorImpuestos
   sueldoTributable: (sueldoLiquido) ->
     # Se asume un aproximado de 20% de descuentos de AFP + Isapre +
     # Seguro Cesantia y otros sobre tope imponible
-    sueldoLiquido - Math.max(sueldoLiquido, TOPE_IMPONIBLE) * 0.2
+    sueldoLiquido - Math.min(sueldoLiquido, TOPE_IMPONIBLE) * 0.2
 
   retiroBruto: (retiroAnual) ->
     retiroAnual / (1 - @tasaPrimeraCategoria)
