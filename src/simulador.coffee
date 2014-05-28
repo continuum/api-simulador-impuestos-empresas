@@ -78,7 +78,8 @@ class SimuladorImpuestosConRentaAtribuida extends SimuladorImpuestos
     # de los socios tal como si las hubieran retirado. Por tanto,
     # acá descartamos el monto efectivamente retirado por los socios
     # asumimos que se distribuye el total de la utilidad:
-    super(utilidadesAnuales, utilidadesAnuales / cantidadSocios,
+    super(utilidadesAnuales,
+          (utilidadesAnuales * (1 - @tasaPrimeraCategoria)) / cantidadSocios,
           sueldoLiquidoSocio, cantidadSocios, regimenEspecial)
 
 
