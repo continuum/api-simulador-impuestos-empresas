@@ -18,10 +18,10 @@ class SimuladorImpuestos
     @tramosImpuestos = _.sortBy(opts.tramosImpuestos, (t) -> t.desde).reverse()
     @regimenesEspeciales = opts.regimenesEspeciales || {}
 
-  sueldoTributable: (sueldoLiquido) ->
+  sueldoTributable: (sueldoBruto) ->
     # Se asume un aproximado de 20% de descuentos de AFP + Isapre +
     # Seguro Cesantia y otros sobre tope imponible
-    sueldoLiquido - Math.min(sueldoLiquido, TOPE_IMPONIBLE) * 0.2
+    sueldoBruto - Math.min(sueldoBruto, TOPE_IMPONIBLE) * 0.2
 
   retiroBruto: (retiroAnual) ->
     retiroAnual / (1 - @tasaPrimeraCategoria)
@@ -36,9 +36,9 @@ class SimuladorImpuestos
     tramo = @tramoImpuesto(ingresoAnual)
     ingresoAnual * tramo.factor - tramo.rebaja
 
-  impuestoExtraPorGC: (retiroAnualSocio, sueldoLiquidoSocio) ->
+  impuestoExtraPorGC: (retiroAnualSocio, sueldoBrutoSocio) ->
     retiroBrutoSocio = @retiroBruto(retiroAnualSocio)
-    sueldoTributableSocio = @sueldoTributable(sueldoLiquidoSocio)
+    sueldoTributableSocio = @sueldoTributable(sueldoBrutoSocio)
     # Impuesto global total menos lo pagado por la persona por su sueldo
     # mes a mes, menos lo pagado por la empresa en primera categoria
     # (OJO: Esto asume que todos los retiros pagaron impuesto de primera
@@ -51,17 +51,17 @@ class SimuladorImpuestos
     globalComplementario - primeraCategoria - segundaCategoria
 
   impactoImpuestosEnCaja: (utilidadesAnuales, retiroAnualSocio,
-                           sueldoLiquidoSocio, cantidadSocios,
+                           sueldoBrutoSocio, cantidadSocios,
                            regimenEspecial) ->
     impacto =
       porTasaPrimeraCategoria: utilidadesAnuales * @tasaPrimeraCategoria,
       porGlobalComplementario:  cantidadSocios * @impuestoExtraPorGC(
-        retiroAnualSocio, sueldoLiquidoSocio
+        retiroAnualSocio, sueldoBrutoSocio
       )
     impactoRegimenesEspeciales =
       if regimenEspecial of @regimenesEspeciales
         @regimenesEspeciales[regimenEspecial](
-          utilidadesAnuales, retiroAnualSocio, sueldoLiquidoSocio,
+          utilidadesAnuales, retiroAnualSocio, sueldoBrutoSocio,
           cantidadSocios, this
         )
       else
@@ -72,7 +72,7 @@ class SimuladorImpuestos
 
 class SimuladorImpuestosConRentaAtribuida extends SimuladorImpuestos
   impactoImpuestosEnCaja: (utilidadesAnuales, retiroAnualSocio,
-                           sueldoLiquidoSocio, cantidadSocios,
+                           sueldoBrutoSocio, cantidadSocios,
                            regimenEspecial) ->
     # En el sistema reformado se atribuyen directamente las utilidades
     # de los socios tal como si las hubieran retirado. Por tanto,
@@ -80,7 +80,7 @@ class SimuladorImpuestosConRentaAtribuida extends SimuladorImpuestos
     # asumimos que se distribuye el total de la utilidad:
     super(utilidadesAnuales,
           (utilidadesAnuales * (1 - @tasaPrimeraCategoria)) / cantidadSocios,
-          sueldoLiquidoSocio, cantidadSocios, regimenEspecial)
+          sueldoBrutoSocio, cantidadSocios, regimenEspecial)
 
 
 simulador2014 = new SimuladorImpuestos
@@ -98,7 +98,7 @@ simulador2014 = new SimuladorImpuestos
     {desde: 150   * UTA, factor: 0.40,  rebaja: 30.67 * UTA }
   ]
   regimenesEspeciales:
-    '14bis': (utilidadesAnuales, retiroAnualSocio, sueldoLiquidoSocio,
+    '14bis': (utilidadesAnuales, retiroAnualSocio, sueldoBrutoSocio,
               cantidadSocios, sim) ->
       # El efecto practico del 14bis es evitar la tasa de primera
       # categoria para las utilidades NO retiradas
@@ -107,7 +107,7 @@ simulador2014 = new SimuladorImpuestos
       por14Bis: -(utilidadesReinvertidas * sim.tasaPrimeraCategoria)
 
 
-    '14quater': (utilidadesAnuales, retiroAnualSocio, sueldoLiquidoSocio,
+    '14quater': (utilidadesAnuales, retiroAnualSocio, sueldoBrutoSocio,
                  cantidadSocios, sim) ->
       # El efecto practico del 14quater es evitar la tasa de primera
       # categoria para utilidades NO retiradas con un tope de
